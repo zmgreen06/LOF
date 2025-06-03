@@ -11,7 +11,7 @@ public class ScareCrowMovement : MonoBehaviour
     Transform target;
     Vector2 moveDirection;
 
-    float health, maxHealth = 10f;
+    float health, maxHealth = 15f;
     private Vector3 ogPosition;
     private Vector3 wallCheck;
     private float rng;
@@ -20,6 +20,7 @@ public class ScareCrowMovement : MonoBehaviour
     public float maximumTimeTillMove;
     
     private float timeUntillMove;
+
 
     public GameObject crow;
     public float fireForce = 2f;
@@ -77,8 +78,7 @@ public class ScareCrowMovement : MonoBehaviour
         if(timeUntillMove <=0)
         {
             crowing = false;
-            //animator.SetBool("shooting", shooting);
-            rng = Random.Range(1, 8);
+            rng = Random.Range(1, 4);
             if(rng == 1)
             {
                 rb.velocity = new Vector2(0f, 2f);
@@ -99,7 +99,6 @@ public class ScareCrowMovement : MonoBehaviour
             else
             {
                 rb.velocity = new Vector2(0f, 0f);
-                crows();
                 time = true;
             }
             SetTimeUntillMove();
@@ -114,12 +113,15 @@ public class ScareCrowMovement : MonoBehaviour
             time = false;
         }else{
             timeUntillMove = Random.Range(minimumTimeTillMove, maximumTimeTillMove);
+            crows();
+            crows();
         }
     }
 
 
     public void TakeDamage(float damage)
     {
+        print(health);
         health -= damage;
         if(health <= 0)
         {
@@ -127,12 +129,12 @@ public class ScareCrowMovement : MonoBehaviour
             
         }
     }
-    void OnDisable()
-    {
-        timeUntillMove = 0;
-        transform.position = ogPosition;
-        health = 3f;
-    }
+    // void OnDisable()
+    // {
+    //     timeUntillMove = 0;
+    //     transform.position = ogPosition;
+    //     health = 3f;
+    // }
     
 
     private void crows()
@@ -166,19 +168,7 @@ public class ScareCrowMovement : MonoBehaviour
 
 
 
-        // GameObject intcrow = Instantiate(crow, Aim1.position, Aim1.rotation);
-        // GameObject intcrow1 = Instantiate(crow, Aim2.position, Aim2.rotation);
-        // GameObject intcrow2 = Instantiate(crow, Aim3.position, Aim3.rotation);
-        // GameObject intcrow3 = Instantiate(crow, Aim4.position, Aim4.rotation);
-        // intcrow.GetComponent<Rigidbody2D>().AddForce(Aim1.up * fireForce, ForceMode2D.Impulse);
-        // intcrow1.GetComponent<Rigidbody2D>().AddForce(-Aim2.up * fireForce, ForceMode2D.Impulse);
-        // intcrow2.GetComponent<Rigidbody2D>().AddForce(Aim3.right * fireForce, ForceMode2D.Impulse);
-        // intcrow3.GetComponent<Rigidbody2D>().AddForce(-Aim4.right * fireForce, ForceMode2D.Impulse);
-        // Destroy(intcrow,5f);
-        // Destroy(intcrow1,5f);
-        // Destroy(intcrow2,5f);
-        // Destroy(intcrow3,5f);
-        
+      
         
     }
 }

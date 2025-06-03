@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public GameObject MovingCamera;
     public GameObject MainCamera;
 
+    public bool boarderOn;
+
     
 
     
@@ -41,11 +43,15 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         canMove = true;
+        boarderOn = true;
     }
     private void Update()
     {
         
-
+        if(canMove == true)
+        {
+            boarderOn = true;
+        }
         if(input.x != 0 || input.y != 0){
             lastMoveDirection = input;
             isWalking = true;
@@ -64,30 +70,33 @@ public class PlayerController : MonoBehaviour
         }
 
         
-        if (!isMoving)
+        if (!isMoving && canMove) // ✅ added canMove check here
         {
-            input.x = Input.GetAxisRaw("Horizontal");
-            input.y = Input.GetAxisRaw("Vertical");
-            
-
-            
-
-            if(input.x!=0) input.y=0;
-
-            if (input != Vector2.zero)
+            if (!isMoving)
             {
-                animator.SetFloat("moveX", input.x/5);
-                animator.SetFloat("moveY", input.y/5);
+                input.x = Input.GetAxisRaw("Horizontal");
+                input.y = Input.GetAxisRaw("Vertical");
+                
 
-                var targetPos = transform.position;
-                targetPos.x += input.x/5;
-                targetPos.y += input.y/5;
+                
+
+                if(input.x!=0) input.y=0;
+
+                if (input != Vector2.zero)
+                {
+                    animator.SetFloat("moveX", input.x/5);
+                    animator.SetFloat("moveY", input.y/5);
+
+                    var targetPos = transform.position;
+                    targetPos.x += input.x/5;
+                    targetPos.y += input.y/5;
 
 
 
-                if(IsWalkable(targetPos))
+                    if(IsWalkable(targetPos))
 
-                    StartCoroutine(Move(targetPos));
+                        StartCoroutine(Move(targetPos));
+                }
             }
             
         }
@@ -101,6 +110,7 @@ public class PlayerController : MonoBehaviour
     {
         if(canMove == true)
         {
+            //boarderOn = true;
             isMoving = true;
             while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
             {
@@ -115,6 +125,10 @@ public class PlayerController : MonoBehaviour
 
             CheckForEncounters();
         }
+        if(canMove != true)
+        {
+           
+        }
     }
 
     private bool IsWalkable(Vector3 targetPos)
@@ -128,7 +142,13 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    public void StopMovement()
+    {
+        StopAllCoroutines();  // This stops the Move coroutine
+        isMoving = false;
+        boarderOn = false;
 
+    }
 
 
     void OnTriggerEnter(Collider other)
@@ -136,7 +156,7 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("ForrestTele"))
         {
             // Teleport the player
-            print("yo");
+            //print("yo");
             transform.position = new Vector2(0,0);
             
         }
@@ -156,20 +176,27 @@ public class PlayerController : MonoBehaviour
         if (hit != null){
             if (hit.CompareTag("ForrestTele"))
             {
-                transform.position = new Vector2(50f,50f);
+                transform.position = new Vector2(-811f,-71.4f);
+            }
+            else if (hit.CompareTag("ForrestExit"))
+            {
+                transform.position = new Vector2(-1f,52.6f);
             }
             else if (hit.CompareTag("City1"))
             {
-                transform.position = new Vector2(-12f,-62f);
                 MainCamera.SetActive(false);
+                transform.position = new Vector2(-12f,-62f);
+                //MainCamera.SetActive(false);
                 MovingCamera.SetActive(true);
 
             }
             else if (hit.CompareTag("City1WestExit"))
             {
+                MovingCamera.SetActive(false);
+                
                 transform.position = new Vector2(42f,0f);
                 MainCamera.SetActive(true);
-                MovingCamera.SetActive(false);
+                
 
             }
             else if (hit.CompareTag("BarnEnter"))
@@ -189,25 +216,7 @@ public class PlayerController : MonoBehaviour
             
         }
 
-        // if(Physics2D.OverlapCircle(transform.position, 0.2f, teleportLayer) != null)
-        // {
-            
-            
-           
-
-        //     Scene currentScene = SceneManager.GetActiveScene ();
-
-		//     string sceneName = currentScene.name;
-        //     if (gameObject.tag == "City1") 
-		//     {
-		// 	    SceneManager.LoadScene(1);
-		//     }
-        //     else if (sceneName == "City1") 
-		//     {
-		// 	    SceneManager.LoadScene(0);
-		//     }
-            
-        // }
+        
         }
     }
 

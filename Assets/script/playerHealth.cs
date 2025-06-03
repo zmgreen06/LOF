@@ -11,50 +11,56 @@ public class playerHealth : MonoBehaviour
     public int maxHealth = 100;
     public Image healthBar;
 
-    
-    //, delay = 0.15f;
+    private bool isInvincible = false;
+    public float invincibilityDuration = 1f;
 
-    // public UnityEvent OnBegin, OnDone;
-    // Start is called before the first frame update
+    private SpriteRenderer spriteRenderer;  // Reference to the SpriteRenderer
+
     void Start()
     {
         health = maxHealth;
+        spriteRenderer = GetComponent<SpriteRenderer>();  // Get the SpriteRenderer component
     }
 
-    // Update is called once per frame
-    public void TakeDamage(int amount){
-        health -= amount;
-        healthBar.fillAmount = health / 100f;
-        
+    public void TakeDamage(int amount)
+    {
+        if (isInvincible) return;
 
-        if(health <=0)
+        health -= amount;
+        healthBar.fillAmount = (float)health / maxHealth;
+
+        if (health <= 0)
         {
             SceneManager.LoadScene(0);
         }
+        else
+        {
+            StartCoroutine(InvincibilityCoroutine());
+        }
+    }
+
+    private IEnumerator InvincibilityCoroutine()
+    {
+        isInvincible = true;
+
+        float elapsed = 0f;
+        // Flash the sprite on and off every 0.1 seconds
+        while (elapsed < invincibilityDuration)
+        {
+            spriteRenderer.enabled = !spriteRenderer.enabled;  // Toggle visibility
+            yield return new WaitForSeconds(0.1f);
+            elapsed += 0.1f;
+        }
+
+        spriteRenderer.enabled = true;  // Make sure sprite is visible at the end
+        isInvincible = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "bullet")
+        if (collision.gameObject.CompareTag("bullet"))
         {
             TakeDamage(10);
-            
         }
     }
-
-    // public void PlayFeedback(GameObject sender)
-    // {
-    //     StopAllCoroutines();
-    //     OnBegin?.Invoke();
-    //     Vector2 direction = (sender.transform.position-transform.position).normalized;
-    //     rb2d.AddForce(direction*strength, ForceMode2d.Impulse);
-    //     StartCoroutine(Reset());
-    // }
-
-    // private IEnumerator Reset()
-    // {
-    //     yield return new WaitForSeconds(delay);
-    //     rb2d.velocity = Vector3.zero;
-    //     OnDone?.Invoke();
-    // }
 }

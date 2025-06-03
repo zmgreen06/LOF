@@ -18,5 +18,10 @@ public class weapon : MonoBehaviour
         {
             prayfer.TakeDamage(damage);
         }
+        ScareCrowMovement ScareCrow = collision.GetComponent<ScareCrowMovement>();
+        if (ScareCrow !=null)
+        {
+            ScareCrow.TakeDamage(damage);
+        }
     }
 }

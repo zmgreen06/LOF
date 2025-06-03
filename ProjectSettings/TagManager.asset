@@ -10,6 +10,7 @@ TagManager:
   - City1WestExit
   - BarnEnter
   - BarnExit
+  - ForrestExit
   layers:
   - Default
   - TransparentFX
