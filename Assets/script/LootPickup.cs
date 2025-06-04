@@ -26,8 +26,11 @@ public class LootPickup : MonoBehaviour
                 //Debug.Log("My tag is: " + gameObject.tag);
                 
                 playerHealth Phealth = other.GetComponent<playerHealth>();
+                Attack attack = other.GetComponent<Attack>();
                 if (Phealth.maxHealth > Phealth.health){
                     Phealth.health += 30;
+                }else{
+                    attack.pelletCounter +=1;
                 }
                 //healthBar.fillAmount = (float)Phealth.health / Phealth.maxHealth;
             }
