@@ -5,6 +5,8 @@ using UnityEngine;
 public class weapon : MonoBehaviour
 {
     public float damage = 1;
+    public enum WeaponType { Melee, Pellet }
+    public WeaponType weaponType;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -12,6 +14,10 @@ public class weapon : MonoBehaviour
         if (enemy !=null)
         {
             enemy.TakeDamage(damage);
+            if (weaponType == WeaponType.Pellet)
+            {
+                Destroy(gameObject);
+            }
         }
         prayferMovement prayfer = collision.GetComponent<prayferMovement>();
         if (prayfer !=null)

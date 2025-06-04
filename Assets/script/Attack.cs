@@ -11,6 +11,13 @@ public class Attack : MonoBehaviour
     public bool spacePress;
     private Animator animator;
 
+    public Transform Aim;
+    public GameObject pellet;
+    public float fireForce = 10f;
+    float shootCooldown = .25f;
+    float shootTimer = .5f;
+    public int pelletCounter = 10;
+
     // Update is called once per frame
     private void Awake()
     {
@@ -19,11 +26,26 @@ public class Attack : MonoBehaviour
 
     void Update()
     {
+        shootTimer += Time.deltaTime;
         CheckMeleeTimer();
 
         if(Input.GetKeyDown("space"))
         {
             onAttack();
+        }
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            onShoot();
+        }
+    }
+
+    void onShoot(){
+        if(shootTimer > shootCooldown && pelletCounter > 0){
+            pelletCounter -= 1;
+            shootTimer = 0;
+            GameObject intPellet = Instantiate(pellet, Aim.position, Aim.rotation);
+            intPellet.GetComponent<Rigidbody2D>().AddForce(-Aim.up * fireForce, ForceMode2D.Impulse);
+            Destroy(intPellet, 2f);
         }
     }
 

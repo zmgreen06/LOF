@@ -21,6 +21,9 @@ public class playerHealth : MonoBehaviour
         health = maxHealth;
         spriteRenderer = GetComponent<SpriteRenderer>();  // Get the SpriteRenderer component
     }
+    void Update(){
+        healthBar.fillAmount = (float)health / maxHealth;
+    }
 
     public void TakeDamage(int amount)
     {

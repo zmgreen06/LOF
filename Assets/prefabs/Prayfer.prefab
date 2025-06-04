@@ -178,6 +178,7 @@ MonoBehaviour:
   playerHealth: {fileID: 0}
   PlayerController: {fileID: 0}
   damage: 30
+  boarderOn: 0
 --- !u!114 &7707339231916863150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +198,11 @@ MonoBehaviour:
   fireForce: 10
   Aim: {fileID: 5960810692113296439}
   shooting: 0
+  lootTable:
+  - itemPrefab: {fileID: 4973052913708909744, guid: 9e47b6a2963605847aaaa6b564c9eca4, type: 3}
+    dropChance: 75
+  - itemPrefab: {fileID: 6759516316029427767, guid: 74c4367356b3a0743a9604006c052429, type: 3}
+    dropChance: 100
 --- !u!95 &4532069096091467782
 Animator:
   serializedVersion: 5

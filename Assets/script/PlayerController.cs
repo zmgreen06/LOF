@@ -31,11 +31,7 @@ public class PlayerController : MonoBehaviour
 
     public bool boarderOn;
 
-    
-
-    
-
-
+  
 
      
 
@@ -153,13 +149,7 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("ForrestTele"))
-        {
-            // Teleport the player
-            //print("yo");
-            transform.position = new Vector2(0,0);
-            
-        }
+        
     }
 
 
@@ -213,6 +203,9 @@ public class PlayerController : MonoBehaviour
                 MovingCamera.SetActive(false);
 
             }
+
+
+            
             
         }
 

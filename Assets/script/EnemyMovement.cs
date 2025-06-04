@@ -19,6 +19,10 @@ public class EnemyMovement : MonoBehaviour
     
     private float timeUntillMove;
 
+    //Loot
+    [Header("Loot")]
+    public List<LootDrops> lootTable = new List<LootDrops>();
+
     private void Awake()
     {
         timeUntillMove = 0;
@@ -91,10 +95,34 @@ public class EnemyMovement : MonoBehaviour
         health -= damage;
         if(health <= 0)
         {
+            //Loot Drops
+            foreach(LootDrops LootDrops in lootTable){
+                if(Random.Range(0f,100f) <= LootDrops.dropChance){
+                    InstantiateLoot(LootDrops.itemPrefab);
+                    break;
+                }
+                
+            }
+            //end of loot drops
+
+
+
             gameObject.SetActive(false);
             
         }
     }
+
+    //More Loot drop
+    void InstantiateLoot(GameObject loot){
+        if(loot){
+            GameObject droppedLoot = Instantiate(loot, transform.position, Quaternion.identity);
+
+            
+        }
+    }
+
+    
+
     void OnDisable()
     {
         timeUntillMove = 0;

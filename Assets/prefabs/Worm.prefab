@@ -130,6 +130,11 @@ MonoBehaviour:
   moveSpeed: 2
   minimumTimeTillMove: 2
   maximumTimeTillMove: 5
+  lootTable:
+  - itemPrefab: {fileID: 6759516316029427767, guid: 74c4367356b3a0743a9604006c052429, type: 3}
+    dropChance: 50
+  - itemPrefab: {fileID: 4973052913708909744, guid: 9e47b6a2963605847aaaa6b564c9eca4, type: 3}
+    dropChance: 50
 --- !u!61 &4831994214898291101
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -192,3 +197,4 @@ MonoBehaviour:
   playerHealth: {fileID: 0}
   PlayerController: {fileID: 0}
   damage: 30
+  boarderOn: 0

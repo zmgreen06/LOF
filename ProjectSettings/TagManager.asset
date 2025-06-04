@@ -11,6 +11,8 @@ TagManager:
   - BarnEnter
   - BarnExit
   - ForrestExit
+  - PelletDrop
+  - HealthDrop
   layers:
   - Default
   - TransparentFX

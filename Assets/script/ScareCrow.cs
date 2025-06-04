@@ -35,6 +35,13 @@ public class ScareCrowMovement : MonoBehaviour
     public bool crowing;
     
 
+
+    //Loot
+    [Header("Loot")]
+    public List<LootDrops> lootTable = new List<LootDrops>();
+
+
+
     private void Awake()
     {
         //animator = GetComponent<Animator>();
@@ -125,10 +132,36 @@ public class ScareCrowMovement : MonoBehaviour
         health -= damage;
         if(health <= 0)
         {
+            //Loot Drops
+            foreach(LootDrops LootDrops in lootTable){
+                if(Random.Range(0f,100f) <= LootDrops.dropChance){
+                    InstantiateLoot(LootDrops.itemPrefab);
+                }
+                break;
+            }
+            //end of loot drops
+
             gameObject.SetActive(false);
             
         }
     }
+
+
+    //More Loot drop
+    void InstantiateLoot(GameObject loot){
+        if(loot){
+            GameObject droppedLoot = Instantiate(loot, transform.position, Quaternion.identity);
+
+
+        }
+    }
+
+
+
+
+
+
+
     // void OnDisable()
     // {
     //     timeUntillMove = 0;
