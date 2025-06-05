@@ -11,7 +11,7 @@ public class ScareCrowMovement : MonoBehaviour
     Transform target;
     Vector2 moveDirection;
 
-    float health, maxHealth = 15f;
+    float health, maxHealth = 35f;
     private Vector3 ogPosition;
     private Vector3 wallCheck;
     private float rng;
@@ -33,7 +33,8 @@ public class ScareCrowMovement : MonoBehaviour
 
     //private Animator animator;
     public bool crowing;
-    
+    public PlayerController PlayerController;
+    public Rigidbody2D Player;
 
 
     //Loot
@@ -72,10 +73,12 @@ public class ScareCrowMovement : MonoBehaviour
         else if(wallCheck.x >= 8f)
         {
             rb.velocity = new Vector2(-2f, 0f);
+            transform.localScale = new Vector3(-3f, 3f, 3f); 
         }
         else if(wallCheck.x <= -11f)
         {
             rb.velocity = new Vector2(2f, 0f);
+            transform.localScale = new Vector3(3f, 3f, 3f);
         }
 
 
@@ -85,7 +88,7 @@ public class ScareCrowMovement : MonoBehaviour
         if(timeUntillMove <=0)
         {
             crowing = false;
-            rng = Random.Range(1, 4);
+            rng = Random.Range(1, 5);
             if(rng == 1)
             {
                 rb.velocity = new Vector2(0f, 2f);
@@ -97,11 +100,14 @@ public class ScareCrowMovement : MonoBehaviour
             }
             else if(rng == 3)
             {
+                
                 rb.velocity = new Vector2(2f, 0f);
+                transform.localScale = new Vector3(3f, 3f, 3f);
             }
             else if(rng == 4)
             {
                 rb.velocity = new Vector2(-2f, 0f);
+                transform.localScale = new Vector3(-3f, 3f, 3f); 
             }
             else
             {
@@ -140,7 +146,15 @@ public class ScareCrowMovement : MonoBehaviour
                 break;
             }
             //end of loot drops
+            if (Player != null)
+            {
+                Player.velocity = Vector2.zero;
+            }
 
+            if (PlayerController != null)
+            {
+                PlayerController.canMove = true;
+            }
             Destroy(gameObject);
             
         }

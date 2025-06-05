@@ -23,6 +23,9 @@ public class playerHealth : MonoBehaviour
     }
     void Update(){
         healthBar.fillAmount = (float)health / maxHealth;
+        if (health > maxHealth){
+            health = maxHealth;
+        }
     }
 
     public void TakeDamage(int amount)

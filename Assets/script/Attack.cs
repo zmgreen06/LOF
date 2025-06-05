@@ -79,4 +79,13 @@ public class Attack : MonoBehaviour
             }
         }
     }
+    public void TouchAttack()
+    {
+        onAttack();
+    }
+
+    public void TouchShoot()
+    {
+        onShoot();
+    }
 }

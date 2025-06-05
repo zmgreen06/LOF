@@ -18,6 +18,9 @@ public class EnemyMovement : MonoBehaviour
     public float maximumTimeTillMove;
     
     private float timeUntillMove;
+    
+    public PlayerController PlayerController;
+    public Rigidbody2D Player;
 
     //Loot
     [Header("Loot")]
@@ -41,6 +44,7 @@ public class EnemyMovement : MonoBehaviour
         if(wallCheck.y >= 6f)
         {
             rb.velocity = new Vector2(0f, -2f);
+            
         }
         else if(wallCheck.y <= -6f)
         {
@@ -49,10 +53,13 @@ public class EnemyMovement : MonoBehaviour
         else if(wallCheck.x >= 8f)
         {
             rb.velocity = new Vector2(-2f, 0f);
+            transform.localScale = new Vector3(.5f, .5f, .5f); 
+            
         }
         else if(wallCheck.x <= -11f)
         {
             rb.velocity = new Vector2(2f, 0f);
+            transform.localScale = new Vector3(-.5f, .5f, .5f);
         }
 
 
@@ -74,10 +81,12 @@ public class EnemyMovement : MonoBehaviour
             else if(rng == 3)
             {
                 rb.velocity = new Vector2(2f, 0f);
+                transform.localScale = new Vector3(-.5f, .5f, .5f);
             }
             else if(rng == 4)
             {
                 rb.velocity = new Vector2(-2f, 0f);
+                transform.localScale = new Vector3(.5f, .5f, .5f); 
             }
             SetTimeUntillMove();
         }
@@ -106,7 +115,15 @@ public class EnemyMovement : MonoBehaviour
             //end of loot drops
 
 
+            if (Player != null)
+            {
+                Player.velocity = Vector2.zero;
+            }
 
+            if (PlayerController != null)
+            {
+                PlayerController.canMove = true;
+            }
             gameObject.SetActive(false);
             
         }
@@ -128,6 +145,8 @@ public class EnemyMovement : MonoBehaviour
         timeUntillMove = 0;
         transform.position = ogPosition;
         health = 3f;
+
+        
     }
     
 }

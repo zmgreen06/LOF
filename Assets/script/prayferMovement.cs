@@ -28,6 +28,9 @@ public class prayferMovement : MonoBehaviour
 
     private Animator animator;
     public bool shooting;
+
+    public PlayerController PlayerController;
+    public Rigidbody2D Player;
     
     //Loot
     [Header("Loot")]
@@ -62,10 +65,12 @@ public class prayferMovement : MonoBehaviour
         else if(wallCheck.x >= 8f)
         {
             rb.velocity = new Vector2(-2f, 0f);
+            transform.localScale = new Vector3(-.5f, .5f, .5f);
         }
         else if(wallCheck.x <= -11f)
         {
             rb.velocity = new Vector2(2f, 0f);
+            transform.localScale = new Vector3(.5f, .5f, .5f); 
         }
 
 
@@ -89,10 +94,13 @@ public class prayferMovement : MonoBehaviour
             else if(rng == 3)
             {
                 rb.velocity = new Vector2(2f, 0f);
+                transform.localScale = new Vector3(.5f, .5f, .5f); 
+                
             }
             else if(rng == 4)
             {
                 rb.velocity = new Vector2(-2f, 0f);
+                transform.localScale = new Vector3(-.5f, .5f, .5f);
             }
             else
             {
@@ -130,7 +138,15 @@ public class prayferMovement : MonoBehaviour
                 
             }
             //end of loot drops
+            if (Player != null)
+            {
+                Player.velocity = Vector2.zero;
+            }
 
+            if (PlayerController != null)
+            {
+                PlayerController.canMove = true;
+            }
             gameObject.SetActive(false);
             
         }

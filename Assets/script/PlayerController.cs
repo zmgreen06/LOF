@@ -31,9 +31,28 @@ public class PlayerController : MonoBehaviour
 
     public bool boarderOn;
 
-  
+    private Vector2 mobileInput = Vector2.zero;
+    private bool usingMobileInput = false;
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    //Moible check
+    public void SetMobileInputDirection(string direction)
+    {
+        usingMobileInput = true;
 
-     
+        switch (direction)
+        {
+            case "Up":    mobileInput = Vector2.up; break;
+            case "Down":  mobileInput = Vector2.down; break;
+            case "Left":  mobileInput = Vector2.left; break;
+            case "Right": mobileInput = Vector2.right; break;
+        }
+    }
+
+    public void StopMobileInput()
+    {
+        mobileInput = Vector2.zero;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////
 
     private void Awake()
     {
@@ -70,8 +89,15 @@ public class PlayerController : MonoBehaviour
         {
             if (!isMoving)
             {
-                input.x = Input.GetAxisRaw("Horizontal");
-                input.y = Input.GetAxisRaw("Vertical");
+                if (usingMobileInput)
+                {
+                    input = mobileInput;
+                }
+                else
+                {
+                    input.x = Input.GetAxisRaw("Horizontal");
+                    input.y = Input.GetAxisRaw("Vertical");
+                }
                 
 
                 
