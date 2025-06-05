@@ -141,7 +141,7 @@ public class ScareCrowMovement : MonoBehaviour
             }
             //end of loot drops
 
-            gameObject.SetActive(false);
+            Destroy(gameObject);
             
         }
     }

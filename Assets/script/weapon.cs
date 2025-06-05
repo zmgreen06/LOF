@@ -23,11 +23,19 @@ public class weapon : MonoBehaviour
         if (prayfer !=null)
         {
             prayfer.TakeDamage(damage);
+            if (weaponType == WeaponType.Pellet)
+            {
+                Destroy(gameObject);
+            }
         }
         ScareCrowMovement ScareCrow = collision.GetComponent<ScareCrowMovement>();
         if (ScareCrow !=null)
         {
             ScareCrow.TakeDamage(damage);
+            if (weaponType == WeaponType.Pellet)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

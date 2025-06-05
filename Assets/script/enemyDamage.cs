@@ -8,7 +8,7 @@ public class enemyDamage : MonoBehaviour
     
     public Rigidbody2D rb2d;
     public Rigidbody2D Player;
-    private float strength = 17.5f;
+    private float strength = 10f;
     public playerHealth playerHealth;
     public PlayerController PlayerController;
     public int damage;

@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsWalkable(Vector3 targetPos)
     {
-        Vector3 offsetPos = targetPos + Vector3.down * 0.4f;
+        Vector3 offsetPos = targetPos + Vector3.down * 0.309f;
 
     // Use a debug visualization to verify where it's checking
         
