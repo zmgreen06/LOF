@@ -13,6 +13,8 @@ TagManager:
   - ForrestExit
   - PelletDrop
   - HealthDrop
+  - TowningtonExit
+  - TowningtonEnter
   layers:
   - Default
   - TransparentFX

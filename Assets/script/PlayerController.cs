@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
 
     public GameObject MovingCamera;
     public GameObject MainCamera;
+    public GameObject Directions;
 
     public bool boarderOn;
 
@@ -59,6 +60,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         canMove = true;
         boarderOn = true;
+        Directions.SetActive(true);
     }
     private void Update()
     {
@@ -229,6 +231,20 @@ public class PlayerController : MonoBehaviour
             else if (hit.CompareTag("BarnExit"))
             {
                 transform.position = new Vector2(52f,23f);
+                MainCamera.SetActive(true);
+                MovingCamera.SetActive(false);
+
+            }
+            else if (hit.CompareTag("TowningtonEnter"))
+            {
+                transform.position = new Vector2(-9f,-167f);
+                MainCamera.SetActive(false);
+                MovingCamera.SetActive(true);
+
+            }
+            else if (hit.CompareTag("TowningtonExit"))
+            {
+                transform.position = new Vector2(-9f,28f);
                 MainCamera.SetActive(true);
                 MovingCamera.SetActive(false);
 
