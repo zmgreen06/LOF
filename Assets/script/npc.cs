@@ -18,6 +18,18 @@ public class npc : MonoBehaviour
 
     private Coroutine typingCoroutine;
 
+    public bool dialogueDone;
+
+    public static int Quest;            // static now
+    public static bool QuestUpdate;     // static now
+
+    void Start()
+    {
+        QuestUpdate = false;
+        dialogueDone = false;
+        index = 0;
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q) && playerIsClose)
@@ -36,7 +48,14 @@ public class npc : MonoBehaviour
             }
         }
 
-        if (dialogueText != null && dialogue.Length > 0 && dialogueText.text == dialogue[index])
+        if(QuestUpdate){
+            Quest += 1;
+            QuestUpdate = false;
+        }
+
+        (int start, int end) = GetDialogueRangeForQuest();
+
+        if (dialogueText != null && dialogue.Length > 0 && index + start < dialogue.Length && dialogueText.text == dialogue[start + index])
         {
             if (cButton != null && playerIsClose)
             {
@@ -73,41 +92,81 @@ public class npc : MonoBehaviour
 
     IEnumerator Typing()
     {
-        if (dialogueText != null && dialogue.Length > index)
+        (int start, int end) = GetDialogueRangeForQuest();
+        int targetIndex = start + index;
+
+        if (dialogueText != null && targetIndex < dialogue.Length)
         {
+            string currentLine = dialogue[targetIndex];
+
+            if (string.IsNullOrWhiteSpace(currentLine))
+            {
+                EndDialogue();
+                yield break;
+            }
+
             dialogueText.text = "";
-            foreach (char letter in dialogue[index].ToCharArray())
+
+            foreach (char letter in currentLine.ToCharArray())
             {
                 dialogueText.text += letter;
                 yield return new WaitForSeconds(wordSpeed);
             }
         }
+        else
+        {
+            EndDialogue(); // Also call this if index is out of range
+        }
     }
 
     public void NextLine()
     {
+        (int start, int end) = GetDialogueRangeForQuest();
+
         if (cButton != null)
         {
             cButton.SetActive(false);
         }
 
-        if (index < dialogue.Length - 1)
+        // Check if we're at or past the end of the dialogue range
+        if ((start + index) >= end - 1)
         {
-            index++;
-            if (typingCoroutine != null)
+            EndDialogue();  // <--- call a separate method here
+            return;
+        }
+
+        index++;
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+
+        if (dialogueText != null)
+        {
+            string nextLine = dialogue[start + index];
+            if (string.IsNullOrWhiteSpace(nextLine))
             {
-                StopCoroutine(typingCoroutine);
+                EndDialogue();  // <--- handle empty line as end
+                return;
             }
 
-            if (dialogueText != null)
-            {
-                dialogueText.text = "";
-                typingCoroutine = StartCoroutine(Typing());
-            }
+            dialogueText.text = "";
+            typingCoroutine = StartCoroutine(Typing());
         }
-        else
+    }
+
+    private (int start, int end) GetDialogueRangeForQuest()
+    {
+        switch (Quest)////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         {
-            zeroText();
+            case 0:
+                return (0, 7); // entries 1 through 6
+            case 1:
+                return (7, 14); // entries 8 through 12
+            // Add more cases as needed
+            default:
+                return (0, 0); // empty fallback
         }
     }
 
@@ -118,6 +177,8 @@ public class npc : MonoBehaviour
             playerIsClose = true;
             zeroText();
         }
+        //QUEST CHECKER
+        
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -126,6 +187,13 @@ public class npc : MonoBehaviour
         {
             playerIsClose = false;
             zeroText();
+        }
+        //QUEST CHECKER///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if(this.CompareTag("Quest1") && dialogueDone == true){
+            if (Quest == 0){
+                QuestUpdate = true;       // this updates the static variable for all npcs
+                dialogueDone = false;
+            }
         }
     }
 
@@ -138,5 +206,12 @@ public class npc : MonoBehaviour
     {
         StopAllCoroutines();
     }
-}
 
+    private void EndDialogue()
+    {
+        zeroText();
+        dialogueDone = true;
+
+    }
+    
+}

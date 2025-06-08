@@ -15,6 +15,7 @@ TagManager:
   - HealthDrop
   - TowningtonExit
   - TowningtonEnter
+  - Quest1
   layers:
   - Default
   - TransparentFX

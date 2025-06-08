@@ -30,10 +30,14 @@ public class PlayerController : MonoBehaviour
     public GameObject MainCamera;
     public GameObject Directions;
 
+    //public npc dialogueDone;
+
     public bool boarderOn;
 
     private Vector2 mobileInput = Vector2.zero;
     private bool usingMobileInput = false;
+
+    //public int Quest;
     ////////////////////////////////////////////////////////////////////////////////////////////
     //Moible check
     public void SetMobileInputDirection(string direction)
@@ -57,6 +61,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        //Quest = 0;
         animator = GetComponent<Animator>();
         canMove = true;
         boarderOn = true;
@@ -179,10 +184,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void OnTriggerEnter(Collider other)
-    {
-        
-    }
+
 
 
 
@@ -258,6 +260,9 @@ public class PlayerController : MonoBehaviour
         
         }
     }
+
+ 
+
 
     
 
