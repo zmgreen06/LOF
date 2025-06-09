@@ -22,6 +22,11 @@ public class EnemyMovement : MonoBehaviour
     public PlayerController PlayerController;
     public Rigidbody2D Player;
 
+    public float xWall;
+    public float NxWall;
+    public float yWall;
+    public float NyWall;
+
     //Loot
     [Header("Loot")]
     public List<LootDrops> lootTable = new List<LootDrops>();
@@ -41,22 +46,22 @@ public class EnemyMovement : MonoBehaviour
     void Update()
     {
         wallCheck = gameObject.transform.localPosition;
-        if(wallCheck.y >= 6f)
+        if(wallCheck.y >= yWall)
         {
             rb.velocity = new Vector2(0f, -2f);
             
         }
-        else if(wallCheck.y <= -6f)
+        else if(wallCheck.y <= NyWall)
         {
             rb.velocity = new Vector2(0f, 2f);
         }
-        else if(wallCheck.x >= 8f)
+        else if(wallCheck.x >= xWall)
         {
             rb.velocity = new Vector2(-2f, 0f);
             transform.localScale = new Vector3(.5f, .5f, .5f); 
             
         }
-        else if(wallCheck.x <= -11f)
+        else if(wallCheck.x <= NxWall)
         {
             rb.velocity = new Vector2(2f, 0f);
             transform.localScale = new Vector3(-.5f, .5f, .5f);

@@ -13,6 +13,8 @@ public class npc : MonoBehaviour
 
     public GameObject cButton;
 
+    public Questkill Questkill;
+
     public float wordSpeed;
     public bool playerIsClose;
 
@@ -32,6 +34,10 @@ public class npc : MonoBehaviour
 
     void Update()
     {
+        if(Questkill.questkill == 15){
+            QuestUpdate = true;
+            Questkill.questkill = 0;
+        }
         if (Input.GetKeyDown(KeyCode.Q) && playerIsClose)
         {
             if (dialoguePanel != null && dialogueText != null)
@@ -51,6 +57,8 @@ public class npc : MonoBehaviour
         if(QuestUpdate){
             Quest += 1;
             QuestUpdate = false;
+            print(Quest);
+            
         }
 
         (int start, int end) = GetDialogueRangeForQuest();
@@ -165,6 +173,12 @@ public class npc : MonoBehaviour
             case 1:
                 return (7, 14); // entries 8 through 12
             // Add more cases as needed
+            case 2:
+                return (14, 21); // entries 8 through 12
+            // Add more cases as needed
+            case 3:
+                return (21, 28); // entries 8 through 12
+            // Add more cases as needed
             default:
                 return (0, 0); // empty fallback
         }
@@ -191,6 +205,11 @@ public class npc : MonoBehaviour
         //QUEST CHECKER///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(this.CompareTag("Quest1") && dialogueDone == true){
             if (Quest == 0){
+                QuestUpdate = true;       // this updates the static variable for all npcs
+                dialogueDone = false;
+            }
+        }else if(this.CompareTag("TowningtonMayor") && dialogueDone == true){
+            if (Quest == 1){
                 QuestUpdate = true;       // this updates the static variable for all npcs
                 dialogueDone = false;
             }

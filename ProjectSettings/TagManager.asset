@@ -16,6 +16,7 @@ TagManager:
   - TowningtonExit
   - TowningtonEnter
   - Quest1
+  - TowningtonMayor
   layers:
   - Default
   - TransparentFX
