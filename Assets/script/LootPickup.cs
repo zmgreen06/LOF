@@ -3,40 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public class LootPickup : MonoBehaviour
 {
-    //public Attack attack;
-    //public Image healthBar;
-    //private SpriteRenderer spriteRenderer;
+    private bool pickedUp = false; // Prevent double trigger
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
-        {
-            //Debug.Log("My tag is: " + gameObject.tag);
-            if (gameObject.tag == "PelletDrop"){
-                //Debug.Log("My tag is: " + gameObject.tag);
-                Attack attack = other.GetComponent<Attack>();
-                if (attack != null)
-                {
-                    attack.pelletCounter +=5; // Add 3 to pelletCounter
-                }
-            }
-            else if (gameObject.tag == "HealthDrop"){
-                //Debug.Log("My tag is: " + gameObject.tag);
-                
-                playerHealth Phealth = other.GetComponent<playerHealth>();
-                Attack attack = other.GetComponent<Attack>();
-                if (Phealth.maxHealth > Phealth.health){
-                    Phealth.health += 30;
-                }else{
-                    attack.pelletCounter +=1;
-                }
-                //healthBar.fillAmount = (float)Phealth.health / Phealth.maxHealth;
-            }
+        if (pickedUp) return; // Already handled
+        if (!other.CompareTag("Player")) return;
 
-            
-            Destroy(gameObject); // Destroy the loot after pickup
+        pickedUp = true; // Mark as handled
+
+        if (gameObject.CompareTag("PelletDrop"))
+        {
+            Attack attack = other.GetComponent<Attack>();
+            if (attack != null)
+            {
+                attack.pelletCounter += 5;
+            }
         }
+        else if (gameObject.CompareTag("HealthDrop"))
+        {
+            playerHealth Phealth = other.GetComponent<playerHealth>();
+            if (Phealth != null && Phealth.health < Phealth.maxHealth)
+            {
+                Phealth.health = Mathf.Min(Phealth.health + 30, Phealth.maxHealth);
+            }
+        }
+
+        Destroy(gameObject); // Safely destroy the pickup
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class playerHealth : MonoBehaviour
 {
     public int health;
-    public int maxHealth = 100;
+    public int maxHealth;
     public Image healthBar;
 
     private bool isInvincible = false;
@@ -18,14 +18,15 @@ public class playerHealth : MonoBehaviour
 
     void Start()
     {
+        maxHealth = 100;
         health = maxHealth;
         spriteRenderer = GetComponent<SpriteRenderer>();  // Get the SpriteRenderer component
     }
     void Update(){
         healthBar.fillAmount = (float)health / maxHealth;
-        if (health > maxHealth){
-            health = maxHealth;
-        }
+        // if (health > maxHealth){
+        //     health = maxHealth;
+        // }
     }
 
     public void TakeDamage(int amount)
