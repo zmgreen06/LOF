@@ -13,12 +13,12 @@ public class EnemyMovement : MonoBehaviour
     private Vector3 ogPosition;
     private Vector3 wallCheck;
     private float rng;
-    
+
     public float minimumTimeTillMove;
     public float maximumTimeTillMove;
-    
-    private float timeUntillMove;
-    
+
+    public float timeUntillMove;
+
     public PlayerController PlayerController;
     public Rigidbody2D Player;
 
@@ -27,9 +27,14 @@ public class EnemyMovement : MonoBehaviour
     public float yWall;
     public float NyWall;
 
-    //Loot
+    // Loot
     [Header("Loot")]
     public List<LootDrops> lootTable = new List<LootDrops>();
+
+    // Hit protection
+    private bool hasBeenHit = false;
+    public float hitCooldown = 0.2f;
+    private float lastHitTime;
 
     private void Awake()
     {
@@ -46,56 +51,55 @@ public class EnemyMovement : MonoBehaviour
     void Update()
     {
         wallCheck = gameObject.transform.localPosition;
-        if(wallCheck.y >= yWall)
+        if (wallCheck.y >= yWall)
         {
             rb.velocity = new Vector2(0f, -2f);
-            
         }
-        else if(wallCheck.y <= NyWall)
+        else if (wallCheck.y <= NyWall)
         {
             rb.velocity = new Vector2(0f, 2f);
         }
-        else if(wallCheck.x >= xWall)
+        else if (wallCheck.x >= xWall)
         {
             rb.velocity = new Vector2(-2f, 0f);
-            transform.localScale = new Vector3(.5f, .5f, .5f); 
-            
+            transform.localScale = new Vector3(.5f, .5f, .5f);
         }
-        else if(wallCheck.x <= NxWall)
+        else if (wallCheck.x <= NxWall)
         {
             rb.velocity = new Vector2(2f, 0f);
             transform.localScale = new Vector3(-.5f, .5f, .5f);
         }
 
-
-
-
         timeUntillMove -= Time.deltaTime;
-        if(timeUntillMove <=0)
+        if (timeUntillMove <= 0)
         {
             rng = Random.Range(1, 5);
-            if(rng == 1)
+            if (rng == 1)
             {
                 rb.velocity = new Vector2(0f, 2f);
-                
             }
-            else if(rng == 2)
+            else if (rng == 2)
             {
                 rb.velocity = new Vector2(0f, -2f);
             }
-            else if(rng == 3)
+            else if (rng == 3)
             {
                 rb.velocity = new Vector2(2f, 0f);
                 transform.localScale = new Vector3(-.5f, .5f, .5f);
             }
-            else if(rng == 4)
+            else if (rng == 4)
             {
                 rb.velocity = new Vector2(-2f, 0f);
-                transform.localScale = new Vector3(.5f, .5f, .5f); 
+                transform.localScale = new Vector3(.5f, .5f, .5f);
             }
             SetTimeUntillMove();
         }
 
+        // Reset hit protection timer
+        if (hasBeenHit && Time.time - lastHitTime >= hitCooldown)
+        {
+            hasBeenHit = false;
+        }
     }
 
     private void SetTimeUntillMove()
@@ -103,22 +107,26 @@ public class EnemyMovement : MonoBehaviour
         timeUntillMove = Random.Range(minimumTimeTillMove, maximumTimeTillMove);
     }
 
-
     public void TakeDamage(float damage)
     {
+        // Prevent multiple hits in short time window
+        if (hasBeenHit) return;
+
+        hasBeenHit = true;
+        lastHitTime = Time.time;
+
         health -= damage;
-        if(health <= 0)
+        if (health <= 0)
         {
-            //Loot Drops
-            foreach(LootDrops LootDrops in lootTable){
-                if(Random.Range(0f,100f) <= LootDrops.dropChance){
-                    InstantiateLoot(LootDrops.itemPrefab);
+            // Loot Drops
+            foreach (LootDrops lootDrops in lootTable)
+            {
+                if (Random.Range(0f, 100f) <= lootDrops.dropChance)
+                {
+                    InstantiateLoot(lootDrops.itemPrefab);
                     break;
                 }
-                
             }
-            //end of loot drops
-
 
             if (Player != null)
             {
@@ -129,21 +137,24 @@ public class EnemyMovement : MonoBehaviour
             {
                 PlayerController.canMove = true;
             }
-            gameObject.SetActive(false);
-            
+
+            StartCoroutine(DieAndDisable());
         }
     }
-
-    //More Loot drop
-    void InstantiateLoot(GameObject loot){
-        if(loot){
-            GameObject droppedLoot = Instantiate(loot, transform.position, Quaternion.identity);
-
-            
-        }
+    public IEnumerator DieAndDisable()
+    {
+        
+        yield return new WaitForSeconds(0.2f);  // small delay for anything to finish
+        gameObject.SetActive(false);
     }
 
-    
+    void InstantiateLoot(GameObject loot)
+    {
+        if (loot)
+        {
+            Instantiate(loot, transform.position, Quaternion.identity);
+        }
+    }
 
     void OnDisable()
     {
@@ -151,7 +162,7 @@ public class EnemyMovement : MonoBehaviour
         transform.position = ogPosition;
         health = 3f;
 
-        
+        // Reset hit flag
+        hasBeenHit = false;
     }
-    
 }

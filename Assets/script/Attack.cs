@@ -5,7 +5,7 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
     public GameObject Melee;
-    bool isAttacking = false;
+    public bool isAttacking = false;
     float atkDuration = 0.3f;
     float atkTimer = 0f;
     public bool spacePress;
@@ -18,9 +18,24 @@ public class Attack : MonoBehaviour
     float shootTimer = .5f;
     public int pelletCounter = 10;
 
+    public float playerStrength = 5f; 
+
+    public Perks perks;
+
+    public bool canShoot;
+
+    public float stun;
+    public int stunChance;
+
+
+    //public List<Rigidbody2D> wormKnock;
+    public EnemyMovement timeUntillMove;
+
     // Update is called once per frame
     private void Awake()
     {
+        stun = .25f;
+        canShoot = false;
         animator = GetComponent<Animator>();
     }
 
@@ -35,7 +50,9 @@ public class Attack : MonoBehaviour
         }
         if(Input.GetKeyDown(KeyCode.E))
         {
-            onShoot();
+            if(canShoot){
+                onShoot();
+            }
         }
     }
 
@@ -87,5 +104,60 @@ public class Attack : MonoBehaviour
     public void TouchShoot()
     {
         onShoot();
+    }
+
+    private IEnumerator ResetEnemyAfterKnockback(Rigidbody2D enemyRb, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (enemyRb != null)
+        {
+            if(perks.stunned == true){
+                
+                int stunChance = Random.Range(1, 5);
+                if (stunChance == 1)
+                {
+                    print("yo");
+                    stun = 2f;
+                }
+            }
+            enemyRb.velocity = Vector2.zero;
+
+            EnemyMovement enemyMovement = enemyRb.GetComponent<EnemyMovement>();
+            prayferMovement prayferMovement = enemyRb.GetComponent<prayferMovement>();
+            if (enemyMovement != null)
+            {
+                enemyRb.velocity = Vector2.zero;
+                enemyMovement.timeUntillMove = stun;
+                
+            }
+            else if(prayferMovement != null){
+                prayferMovement.timeUntillMove = stun;
+            }
+            
+        }
+        stun = .25f;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+
+        if(collision.gameObject.tag == "Enemy" && isAttacking == true)
+        {
+            {
+                // Apply knockback (normalized!)
+                Rigidbody2D enemyRb = collision.GetComponent<Rigidbody2D>();
+                if(enemyRb != null){
+                    Vector2 direction = (enemyRb.transform.position - transform.position).normalized;
+                    enemyRb.AddForce(direction * playerStrength, ForceMode2D.Impulse);
+                    
+                    // After knockback duration, re-enable movement
+                    
+                    StartCoroutine(ResetEnemyAfterKnockback(enemyRb, .25f));
+                    //Invoke("Hit", .25f);
+                }
+            }
+            
+        }
     }
 }

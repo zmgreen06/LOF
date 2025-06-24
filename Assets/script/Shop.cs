@@ -17,6 +17,10 @@ public class Shop : MonoBehaviour
     public playerHealth health;
     public PlayerController speed;
     public static int amountOfBuys;
+    
+
+
+    public PlayerController playerController;
     public Attack attack;
 
     public TextMeshProUGUI priceText;
@@ -32,12 +36,14 @@ public class Shop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && playerIsClose)
+        if (Input.GetKeyDown(KeyCode.E) && playerIsClose)
         {
             if(!isActive){
+                playerController.canMove = false;
                 shopPanel.SetActive(true);
                 isActive = true;
             }else if (isActive){
+                playerController.canMove = true;
                 shopPanel.SetActive(false);
                 isActive = false;
             }
@@ -48,6 +54,7 @@ public class Shop : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             
+            attack.canShoot = false;
             playerIsClose = true;
             
         }
@@ -58,6 +65,7 @@ public class Shop : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            attack.canShoot = true;
             playerIsClose = false;
         }
     }
@@ -75,6 +83,15 @@ public class Shop : MonoBehaviour
         if(attack.pelletCounter >= price){
             //print(speed.moveSpeed);
             speed.moveSpeed = speed.moveSpeed + .5f;
+            inflation();
+        }
+
+    }
+
+    public void buyKnockBackClicked(){
+        if(attack.pelletCounter >= price){
+            //print(speed.moveSpeed);
+            attack.playerStrength = attack.playerStrength + .5f;
             inflation();
         }
 

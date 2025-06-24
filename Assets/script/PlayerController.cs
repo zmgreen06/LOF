@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public GameObject MovingCamera;
     public GameObject MainCamera;
     public GameObject Directions;
+    public Attack attack;
+    public Perks perks;
 
     //public npc dialogueDone;
 
@@ -62,8 +64,9 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         //Quest = 0;
+        attack.canShoot = false;
         animator = GetComponent<Animator>();
-        canMove = true;
+        canMove = false;
         boarderOn = true;
         Directions.SetActive(true);
     }
@@ -108,8 +111,10 @@ public class PlayerController : MonoBehaviour
                 
 
                 
+                if (perks.Bishop == false){
+                    if(input.x!=0) input.y=0;
+                }
 
-                if(input.x!=0) input.y=0;
 
                 if (input != Vector2.zero)
                 {

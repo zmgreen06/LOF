@@ -8,16 +8,22 @@ public class weapon : MonoBehaviour
     public enum WeaponType { Melee, Pellet }
     public WeaponType weaponType;
 
+    private SpriteRenderer spriteRenderer;
+    public Attack attack;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         EnemyMovement enemy = collision.GetComponent<EnemyMovement>();
         if (enemy !=null)
         {
+            
             enemy.TakeDamage(damage);
             if (weaponType == WeaponType.Pellet)
             {
+
                 Destroy(gameObject);
             }
+            
         }
         prayferMovement prayfer = collision.GetComponent<prayferMovement>();
         if (prayfer !=null)

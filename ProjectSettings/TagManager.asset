@@ -17,6 +17,7 @@ TagManager:
   - TowningtonEnter
   - Quest1
   - TowningtonMayor
+  - Enemy
   layers:
   - Default
   - TransparentFX

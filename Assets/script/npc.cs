@@ -15,8 +15,8 @@ public class npc : MonoBehaviour
 
     public Questkill Questkill;
 
-    public float wordSpeed;
-    public bool playerIsClose;
+    public float wordSpeed = .009f;
+    public bool playerIsClose = false;
 
     private Coroutine typingCoroutine;
 
@@ -25,8 +25,15 @@ public class npc : MonoBehaviour
     public static int Quest;            // static now
     public static bool QuestUpdate;     // static now
 
+    public bool level;
+
+    public PlayerController playerController;
+    public Attack attack;
+    public Perks perks;
+
     void Start()
     {
+        level = false;
         QuestUpdate = false;
         dialogueDone = false;
         index = 0;
@@ -38,24 +45,31 @@ public class npc : MonoBehaviour
             QuestUpdate = true;
             Questkill.questkill = 0;
         }
-        if (Input.GetKeyDown(KeyCode.Q) && playerIsClose)
+        
+        if (Input.GetKeyDown(KeyCode.E) && playerIsClose)
         {
             if (dialoguePanel != null && dialogueText != null)
             {
                 if (dialoguePanel.activeInHierarchy)
                 {
-                    zeroText();
-                }
-                else
-                {
+                    NextLine();
+                }else{
+                    //attack.canShoot = false;
+                    playerController.canMove = false;
                     dialoguePanel.SetActive(true);
                     typingCoroutine = StartCoroutine(Typing());
                 }
+                
             }
         }
 
         if(QuestUpdate){
             Quest += 1;
+            ////////////////////////////////////////////////CHANGE BACK////////////////////////////////////////////////////////////////////////////////////
+            perks.levelUp();
+            // if(Quest%3 == 0){
+            //     perks.levelUp();
+            // }
             QuestUpdate = false;
             print(Quest);
             
@@ -189,6 +203,7 @@ public class npc : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerIsClose = true;
+            attack.canShoot = false;
             zeroText();
         }
         //QUEST CHECKER
@@ -200,6 +215,7 @@ public class npc : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerIsClose = false;
+            attack.canShoot = true;
             zeroText();
         }
         //QUEST CHECKER///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,6 +246,7 @@ public class npc : MonoBehaviour
     {
         zeroText();
         dialogueDone = true;
+        playerController.canMove = true;
 
     }
     

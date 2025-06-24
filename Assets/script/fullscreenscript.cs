@@ -4,18 +4,22 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class FullscreenOnFirstTap : MonoBehaviour, IPointerDownHandler
+public class FullscreenOnFirstTap : MonoBehaviour
 {
+    public PlayerController playerController;
+    public Attack attack;
     private bool fullscreenActivated = false;
 
-    public void OnPointerDown(PointerEventData eventData)
+    void Update()
     {
-        if (!fullscreenActivated)
+        if (!fullscreenActivated && Input.GetKeyUp(KeyCode.E))
         {
+            attack.canShoot = true;
+            playerController.canMove = true;
             Screen.fullScreen = true;
             fullscreenActivated = true;
 
-            // Optional: Disable this panel so it doesn't block input anymore
+            // Optional: Disable this GameObject if you were using it as an overlay
             gameObject.SetActive(false);
         }
     }
