@@ -38,7 +38,8 @@ public class playerHealth : MonoBehaviour
 
         if (health <= 0)
         {
-            SceneManager.LoadScene(0);
+            transform.position = new Vector2(-3.61f,-0f);
+            health = maxHealth/2;
         }
         else
         {

@@ -91,7 +91,7 @@ public class Shop : MonoBehaviour
     public void buyKnockBackClicked(){
         if(attack.pelletCounter >= price){
             //print(speed.moveSpeed);
-            attack.playerStrength = attack.playerStrength + .5f;
+            attack.playerStrength = attack.playerStrength + 1.5f;
             inflation();
         }
 

@@ -73,6 +73,19 @@ public class prayferMovement : MonoBehaviour
         }
 
         timeUntillMove -= Time.deltaTime;
+
+        // ✅ Move cooldown reset outside stun-block
+        if (hasBeenHit && Time.time - lastHitTime >= hitCooldown)
+        {
+            hasBeenHit = false;
+        }
+
+        if (timeUntillMove > 9999f)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }
+
         if (timeUntillMove <= 0)
         {
             shooting = false;
@@ -104,12 +117,6 @@ public class prayferMovement : MonoBehaviour
             }
 
             SetTimeUntillMove();
-        }
-
-        // Reset hit cooldown
-        if (hasBeenHit && Time.time - lastHitTime >= hitCooldown)
-        {
-            hasBeenHit = false;
         }
     }
 
@@ -179,6 +186,12 @@ public class prayferMovement : MonoBehaviour
         transform.position = ogPosition;
         health = 3f;
         hasBeenHit = false; // reset flag so enemy can be hit again on respawn
+        if (Player != null)
+        {
+            print("yo");
+            Player.velocity = Vector2.zero;
+            PlayerController.canMove = true;
+        }
     }
 
     private void shoot()

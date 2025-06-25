@@ -21,6 +21,7 @@ public class EnemyMovement : MonoBehaviour
 
     public PlayerController PlayerController;
     public Rigidbody2D Player;
+    public Attack attack;
 
     public float xWall;
     public float NxWall;
@@ -50,7 +51,17 @@ public class EnemyMovement : MonoBehaviour
 
     void Update()
     {
+        if (hasBeenHit && Time.time - lastHitTime >= hitCooldown)
+        {
+            hasBeenHit = false;
+        }
+        if (timeUntillMove > 9999f)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }
         wallCheck = gameObject.transform.localPosition;
+        
         if (wallCheck.y >= yWall)
         {
             rb.velocity = new Vector2(0f, -2f);
@@ -69,8 +80,11 @@ public class EnemyMovement : MonoBehaviour
             rb.velocity = new Vector2(2f, 0f);
             transform.localScale = new Vector3(-.5f, .5f, .5f);
         }
-
-        timeUntillMove -= Time.deltaTime;
+        
+        if (timeUntillMove > 0){
+            timeUntillMove -= Time.deltaTime;
+            return;
+        }
         if (timeUntillMove <= 0)
         {
             rng = Random.Range(1, 5);
@@ -96,10 +110,7 @@ public class EnemyMovement : MonoBehaviour
         }
 
         // Reset hit protection timer
-        if (hasBeenHit && Time.time - lastHitTime >= hitCooldown)
-        {
-            hasBeenHit = false;
-        }
+        
     }
 
     private void SetTimeUntillMove()
@@ -137,16 +148,14 @@ public class EnemyMovement : MonoBehaviour
             {
                 PlayerController.canMove = true;
             }
-
-            StartCoroutine(DieAndDisable());
+            
+            attack.stunIcon.SetActive(false);
+            
+            
+            gameObject.SetActive(false);
         }
     }
-    public IEnumerator DieAndDisable()
-    {
-        
-        yield return new WaitForSeconds(0.2f);  // small delay for anything to finish
-        gameObject.SetActive(false);
-    }
+
 
     void InstantiateLoot(GameObject loot)
     {
@@ -161,8 +170,16 @@ public class EnemyMovement : MonoBehaviour
         timeUntillMove = 0;
         transform.position = ogPosition;
         health = 3f;
-
+        
         // Reset hit flag
         hasBeenHit = false;
+        if (Player != null)
+        {
+
+            //print("yo");
+            Player.velocity = Vector2.zero;
+            PlayerController.canMove = true;
+            
+        }
     }
 }

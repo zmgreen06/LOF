@@ -27,6 +27,9 @@ public class Attack : MonoBehaviour
     public float stun;
     public int stunChance;
 
+    public GameObject stunIcon;
+    
+
 
     //public List<Rigidbody2D> wormKnock;
     public EnemyMovement timeUntillMove;
@@ -109,33 +112,95 @@ public class Attack : MonoBehaviour
     private IEnumerator ResetEnemyAfterKnockback(Rigidbody2D enemyRb, float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (enemyRb != null)
+
+        // Check if enemyRb or enemyRb.gameObject is null or destroyed
+        if (enemyRb == null || enemyRb.gameObject == null)
         {
-            if(perks.stunned == true){
-                
-                int stunChance = Random.Range(1, 5);
-                if (stunChance == 1)
+            yield break; // Exit coroutine early, since enemy is gone
+        }
+
+        EnemyMovement enemyMovement = enemyRb.GetComponent<EnemyMovement>();
+        prayferMovement prayferMovement = enemyRb.GetComponent<prayferMovement>();
+
+        if (perks.stunned == true)
+        {
+            stunChance = Random.Range(1, 5);
+
+            if (stunChance == 1)
+            {
+                if (enemyRb.gameObject.activeInHierarchy)
                 {
-                    print("yo");
-                    stun = 2f;
+                    stunIcon.SetActive(true);
+
+                    if (enemyMovement != null)
+                    {
+                        enemyRb.velocity = Vector2.zero;
+                        enemyMovement.timeUntillMove = 10000f;
+                    }
+                    else if (prayferMovement != null)
+                    {
+                        enemyRb.velocity = Vector2.zero;
+                        prayferMovement.timeUntillMove = 10000f;
+                    }
+
+                    stun = 5f;
+                    StartCoroutine(stunIconWait(enemyRb, stun));
                 }
             }
-            enemyRb.velocity = Vector2.zero;
-
-            EnemyMovement enemyMovement = enemyRb.GetComponent<EnemyMovement>();
-            prayferMovement prayferMovement = enemyRb.GetComponent<prayferMovement>();
+            else
+            {
+                if (enemyMovement != null)
+                {
+                    enemyRb.velocity = Vector2.zero;
+                    enemyMovement.timeUntillMove = 0.1f;
+                }
+                else if (prayferMovement != null)
+                {
+                    enemyRb.velocity = Vector2.zero;
+                    prayferMovement.timeUntillMove = 0.1f;
+                }
+            }
+        }
+        else
+        {
             if (enemyMovement != null)
             {
                 enemyRb.velocity = Vector2.zero;
-                enemyMovement.timeUntillMove = stun;
-                
+                enemyMovement.timeUntillMove = 0.1f;
             }
-            else if(prayferMovement != null){
-                prayferMovement.timeUntillMove = stun;
+            else if (prayferMovement != null)
+            {
+                prayferMovement.timeUntillMove = 0.1f;
             }
-            
         }
+
         stun = .25f;
+    }
+
+
+    IEnumerator stunIconWait(Rigidbody2D enemyRb, float stun)
+    {
+        yield return new WaitForSeconds(stun);
+
+        if (enemyRb == null || enemyRb.gameObject == null)
+        {
+            stunIcon.SetActive(false);
+            yield break;
+        }
+
+        EnemyMovement enemyMovement = enemyRb.GetComponent<EnemyMovement>();
+        prayferMovement prayferMovement = enemyRb.GetComponent<prayferMovement>();
+
+        if (enemyMovement != null)
+        {
+            enemyMovement.timeUntillMove = 0f;
+        }
+        if (prayferMovement != null)
+        {
+            prayferMovement.timeUntillMove = 0f;
+        }
+
+        stunIcon.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -149,11 +214,12 @@ public class Attack : MonoBehaviour
                 Rigidbody2D enemyRb = collision.GetComponent<Rigidbody2D>();
                 if(enemyRb != null){
                     Vector2 direction = (enemyRb.transform.position - transform.position).normalized;
+                    enemyRb.velocity = Vector2.zero;
                     enemyRb.AddForce(direction * playerStrength, ForceMode2D.Impulse);
                     
                     // After knockback duration, re-enable movement
                     
-                    StartCoroutine(ResetEnemyAfterKnockback(enemyRb, .25f));
+                    StartCoroutine(ResetEnemyAfterKnockback(enemyRb, .2f));
                     //Invoke("Hit", .25f);
                 }
             }
